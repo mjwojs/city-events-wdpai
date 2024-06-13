@@ -37,7 +37,6 @@ class Database {
 
     public function initializeDatabase() {
         try {
-            // Check if 'users' table exists, if not, create it
             $this->conn->exec("
                 CREATE TABLE IF NOT EXISTS users (
                     id SERIAL PRIMARY KEY,
@@ -46,18 +45,27 @@ class Database {
                     first_name VARCHAR(255) NOT NULL,
                     last_name VARCHAR(255) NOT NULL,
                     username VARCHAR(255) NOT NULL,
-                    city VARCHAR(255) NOT NULL
+                    city VARCHAR(255) NOT NULL,
+                    profile_picture BYTEA
                 );
             ");
 
-            // Check if 'events' table exists, if not, create it
             $this->conn->exec("
-                CREATE TABLE IF NOT EXISTS events (
+                CREATE TABLE IF NOT EXISTS projects (
                     id SERIAL PRIMARY KEY,
                     title VARCHAR(255) NOT NULL,
                     description TEXT,
-                    location VARCHAR(255),
-                    date TIMESTAMP
+                    image VARCHAR(255),
+                    date TIMESTAMP,
+                    creator_id INTEGER REFERENCES users(id)
+                );
+            ");
+
+            $this->conn->exec("
+                CREATE TABLE IF NOT EXISTS event_attendees (
+                    event_id INTEGER REFERENCES projects(id),
+                    user_id INTEGER REFERENCES users(id),
+                    PRIMARY KEY (event_id, user_id)
                 );
             ");
         } catch (PDOException $e) {

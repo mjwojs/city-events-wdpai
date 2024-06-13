@@ -1,0 +1,14 @@
+<nav class="flex-row-center-center">
+    <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
+    <a href="/profile"><i class="fas fa-user"></i> Profile</a>
+    <a href="/add-event"><i class="fas fa-plus"></i> Add Event</a>
+    <div class="profile-menu">
+        <?php if (isset($user) && $user->getProfilePicture()): ?>
+            <img src="data:image/jpeg;base64,<?= $user->getProfilePicture(); ?>" alt="Profile Picture" class="profile-picture-thumb" onclick="toggleProfileMenu()">
+        <?php endif; ?>
+        <div class="profile-dropdown" id="profile-dropdown">
+            <a href="/profile">Profile</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</nav>

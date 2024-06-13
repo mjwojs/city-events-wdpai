@@ -1,3 +1,49 @@
+/* Additional styles for profile picture */
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 10px 0;
+}
+
+.profile-picture-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.profile-menu {
+    position: relative;
+    margin-left: auto;
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background-color: white;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.profile-dropdown a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+}
+
+.profile-dropdown a:hover {
+    background-color: #f0f0f5;
+}
+
 /* Global Styles */
 body {
     background-color: #f0f0f5;
@@ -50,6 +96,11 @@ nav a {
 
 nav a:hover {
     background-color: #45a049;
+}
+
+nav .profile-menu {
+    margin-left: auto;
+    margin-right: 20px;
 }
 
 /* Form Styles */

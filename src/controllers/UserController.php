@@ -20,8 +20,9 @@ class UserController extends AppController {
             $lastName = $_POST['last_name'];
             $username = $_POST['username'];
             $city = $_POST['city'];
+            $profilePicture = null;
 
-            $user = new User($email, $password, $firstName, $lastName, $username, $city);
+            $user = new User($email, $password, $firstName, $lastName, $username, $city, $profilePicture);
 
             try {
                 $this->userRepository->save($user);
@@ -77,5 +78,41 @@ class UserController extends AppController {
 
         $user = $this->userRepository->find($_SESSION['user']);
         $this->render('profile', ['user' => $user]);
+    }
+
+    public function updateProfilePicture() {
+        if ($this->isPost() && isset($_SESSION['user'])) {
+            $userId = $_SESSION['user'];
+            if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+                $fileTmpPath = $_FILES['profile_picture']['tmp_name'];
+                $fileName = $_FILES['profile_picture']['name'];
+                $fileSize = $_FILES['profile_picture']['size'];
+                $fileType = $_FILES['profile_picture']['type'];
+                $fileNameCmps = explode(".", $fileName);
+                $fileExtension = strtolower(end($fileNameCmps));
+
+                $allowedfileExtensions = array('jpg', 'gif', 'png');
+                if (in_array($fileExtension, $allowedfileExtensions)) {
+                    $profilePicture = file_get_contents($fileTmpPath);
+
+                    $this->userRepository->updateProfilePicture($userId, $profilePicture);
+
+                    // Pobierz zaktualizowane informacje o użytkowniku
+                    $user = $this->userRepository->find($userId);
+
+                    // Przekaż zaktualizowane informacje do widoku
+                    $this->render('profile', ['user' => $user]);
+                    exit();
+                } else {
+                    $user = $this->userRepository->find($userId);
+                    $this->render('profile', ['user' => $user, 'message' => 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions)]);
+                }
+            } else {
+                $user = $this->userRepository->find($userId);
+                $this->render('profile', ['user' => $user, 'message' => 'There was an error with the file upload.']);
+            }
+        } else {
+            header('Location: /login');
+        }
     }
 }

@@ -8,21 +8,33 @@
     <title>Profile</title>
 </head>
 <body>
-    <nav class="flex-row-center-center">
-        <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
-        <a href="/profile"><i class="fas fa-user"></i> Profile</a>
-        <a href="/add-event"><i class="fas fa-plus"></i> Add Event</a>
-        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
-    </nav>
+    <?php include 'partials/nav.html'; ?>
 
     <div class="container flex-row-center-center">
         <div class="main">
             <h1>PROFILE</h1>
-            <p><strong>Email:</strong> <?= $user->getEmail(); ?></p>
-            <p><strong>First Name:</strong> <?= $user->getFirstName(); ?></p>
-            <p><strong>Last Name:</strong> <?= $user->getLastName(); ?></p>
-            <p><strong>Username:</strong> <?= $user->getUsername(); ?></p>
-            <p><strong>City:</strong> <?= $user->getCity(); ?></p>
+            <?php if ($user): ?>
+                <p><strong>Email:</strong> <?= $user->getEmail(); ?></p>
+                <p><strong>First Name:</strong> <?= $user->getFirstName(); ?></p>
+                <p><strong>Last Name:</strong> <?= $user->getLastName(); ?></p>
+                <p><strong>Username:</strong> <?= $user->getUsername(); ?></p>
+                <p><strong>City:</strong> <?= $user->getCity(); ?></p>
+
+                <?php if ($user->getProfilePicture()): ?>
+                    <p><strong>Profile Picture:</strong></p>
+                    <img src="data:image/jpeg;base64,<?= $user->getProfilePicture(); ?>" alt="Profile Picture" class="profile-picture">
+                <?php endif; ?>
+
+                <form action="/update-profile-picture" method="POST" enctype="multipart/form-data">
+                    <label for="profile_picture">Update Profile Picture</label>
+                    <input type="file" name="profile_picture" id="profile_picture">
+                    <button type="submit">Upload</button>
+                </form>
+            <?php endif; ?>
+
+            <?php if (isset($message)): ?>
+                <p><?= $message ?></p>
+            <?php endif; ?>
         </div>
     </div>
 

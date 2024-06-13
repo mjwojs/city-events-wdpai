@@ -5,30 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/public/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <title><?= $title ?></title>
+    <title>Dashboard</title>
 </head>
 <body>
-    <nav class="flex-row-center-center">
-        <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
-        <a href="/profile"><i class="fas fa-user"></i> Profile</a>
-        <a href="/add-event"><i class="fas fa-plus"></i> Add Event</a>
-        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
-    </nav>
+    <?php include 'partials/nav.html'; ?>
 
     <div class="container flex-row-center-center">
         <div class="main">
             <h1>DASHBOARD</h1>
             <div class="projects">
-                <?php foreach($events as $event): ?>
-                    <div class="card">
-                        <h2><?= $event->getTitle(); ?></h2>
-                        <p><?= $event->getDescription(); ?></p>
-                        <p><?= $event->getLocation(); ?></p>
-                        <p><?= $event->getDate(); ?></p>
-                    </div>
-                <?php endforeach; ?>
+                <?php if (isset($projects) && is_array($projects) && count($projects) > 0): ?>
+                    <?php foreach($projects as $project): ?>
+                        <div class="card" onclick="location.href='/event/<?= $project->getId(); ?>'">
+                            <img src="<?= $project->getImage(); ?>" alt="Project Image">
+                            <h2><?= $project->getTitle(); ?></h2>
+                            <p><?= $project->getDescription(); ?></p>
+                            <p><small><?= $project->getDate(); ?></small></p>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No projects available.</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+
+    <script src="/public/js/main.js"></script>
 </body>
 </html>

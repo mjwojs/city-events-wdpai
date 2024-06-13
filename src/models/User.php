@@ -8,14 +8,25 @@ class User {
     private $lastName;
     private $username;
     private $city;
+    private $profilePicture;
 
-    public function __construct(string $email, string $password, ?string $firstName = null, ?string $lastName = null, ?string $username = null, ?string $city = null, ?int $id = null) {
+    public function __construct(
+        string $email, 
+        string $password, 
+        ?string $firstName = null, 
+        ?string $lastName = null, 
+        ?string $username = null, 
+        ?string $city = null, 
+        ?string $profilePicture = null, 
+        ?int $id = null
+    ) {
         $this->email = $email;
         $this->password = $password;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->username = $username;
         $this->city = $city;
+        $this->profilePicture = $profilePicture;
         $this->id = $id;
     }
 
@@ -45,5 +56,9 @@ class User {
 
     public function getCity(): ?string {
         return $this->city;
+    }
+
+    public function getProfilePicture(): ?string {
+        return $this->profilePicture;
     }
 }

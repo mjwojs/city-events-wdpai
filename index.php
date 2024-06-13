@@ -34,6 +34,10 @@ switch ($action) {
         $userController = new UserController();
         $userController->profile();
         break;
+    case "update-profile-picture":
+        $userController = new UserController();
+        $userController->updateProfilePicture();
+        break;
     case "add-event":
         $eventController = new EventController();
         $eventController->addEvent();

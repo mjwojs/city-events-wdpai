@@ -4,18 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="/public/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Add Event</title>
 </head>
-<body class="flex-row-center-center">
-    <div class="container">
-        <form class="flex-column-center-center" action="/add-event" method="POST">
-            <h1>ADD EVENT</h1>
-            <input type="text" name="title" placeholder="Title" required>
-            <textarea name="description" placeholder="Description" required></textarea>
-            <input type="text" name="location" placeholder="Location" required>
-            <input type="datetime-local" name="date" placeholder="Date" required>
-            <button type="submit">ADD EVENT</button>
+<body>
+    <?php include 'partials/nav.html'; ?>
+
+    <div class="container flex-column-center-center">
+        <form action="/add-event" method="POST" class="flex-column-center-center">
+            <h1>Add Event</h1>
+            <input type="text" name="title" placeholder="Event Title" required>
+            <textarea name="description" placeholder="Event Description" required></textarea>
+            <input type="text" name="location" placeholder="Event Location (Image URL)" required>
+            <input type="date" name="date" placeholder="Event Date" required>
+            <input type="text" name="emails" placeholder="Invitee Emails (comma-separated)" required>
+            <button type="submit">Add Event</button>
         </form>
     </div>
+
+    <script src="/public/js/main.js"></script>
 </body>
 </html>
