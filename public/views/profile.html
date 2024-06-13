@@ -11,14 +11,21 @@
     <nav class="flex-row-center-center">
         <a href="/dashboard"><i class="fas fa-home"></i> Home</a>
         <a href="/profile"><i class="fas fa-user"></i> Profile</a>
+        <a href="/add-event"><i class="fas fa-plus"></i> Add Event</a>
         <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </nav>
 
     <div class="container flex-row-center-center">
         <div class="main">
             <h1>PROFILE</h1>
-            <p>Email: <span><?= $user->getEmail(); ?></span></p>
+            <p><strong>Email:</strong> <?= $user->getEmail(); ?></p>
+            <p><strong>First Name:</strong> <?= $user->getFirstName(); ?></p>
+            <p><strong>Last Name:</strong> <?= $user->getLastName(); ?></p>
+            <p><strong>Username:</strong> <?= $user->getUsername(); ?></p>
+            <p><strong>City:</strong> <?= $user->getCity(); ?></p>
         </div>
     </div>
+
+    <script src="/public/js/main.js"></script>
 </body>
 </html>

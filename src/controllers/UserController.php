@@ -16,11 +16,29 @@ class UserController extends AppController {
         if ($this->isPost()) {
             $email = $_POST['email'];
             $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            $firstName = $_POST['first_name'];
+            $lastName = $_POST['last_name'];
+            $username = $_POST['username'];
+            $city = $_POST['city'];
 
-            $user = new User($email, $password);
-            $this->userRepository->save($user);
+            $user = new User($email, $password, $firstName, $lastName, $username, $city);
 
-            $this->render('login', ['message' => 'Successfully registered!']);
+            try {
+                $this->userRepository->save($user);
+
+                // Automatyczne logowanie po pomyślnej rejestracji
+                $user = $this->userRepository->findByEmail($email);
+                $_SESSION['user'] = $user->getId();
+
+                header('Location: /dashboard');
+                exit();
+            } catch (PDOException $e) {
+                if ($e->getCode() == 23505) { // 23505 jest kodem błędu dla zduplikowanego wpisu w PostgreSQL
+                    $this->render('register', ['message' => 'Email is already taken!']);
+                } else {
+                    $this->render('register', ['message' => 'An error occurred. Please try again.']);
+                }
+            }
         } else {
             $this->render('register');
         }
@@ -36,6 +54,7 @@ class UserController extends AppController {
             if ($user && password_verify($password, $user->getPassword())) {
                 $_SESSION['user'] = $user->getId();
                 header('Location: /dashboard');
+                exit();
             } else {
                 $this->render('login', ['message' => 'Invalid credentials!']);
             }
@@ -47,11 +66,13 @@ class UserController extends AppController {
     public function logout() {
         session_destroy();
         header('Location: /login');
+        exit();
     }
 
     public function profile() {
         if (!isset($_SESSION['user'])) {
             header('Location: /login');
+            exit();
         }
 
         $user = $this->userRepository->find($_SESSION['user']);
