@@ -27,6 +27,20 @@ switch($action) {
             header('Location: /dashboard');
         }
         break;
+    case "edit-event":
+        if ($id) {
+            $eventController->editEvent($id);
+        } else {
+            header('Location: /dashboard');
+        }
+        break;
+    case "delete-event":
+        if ($id) {
+            $eventController->deleteEvent($id);
+        } else {
+            header('Location: /dashboard');
+        }
+        break;
     case "login":
         $userController->login();
         break;

@@ -6,13 +6,15 @@ class Project {
     private $location;
     private $id;
     private $date;
+    private $creatorId;  // Dodana właściwość
 
-    public function __construct(string $title, string $description, string $location, int $id, string $date) {
+    public function __construct(string $title, string $description, string $location, int $id, string $date, int $creatorId) {
         $this->title = $title;
         $this->description = $description;
         $this->location = $location;
         $this->id = $id;
         $this->date = $date;
+        $this->creatorId = $creatorId;  // Przypisanie wartości
     }
 
     public function getTitle(): string {
@@ -33,5 +35,9 @@ class Project {
 
     public function getDate(): string {
         return $this->date;
+    }
+
+    public function getCreatorId(): int {  // Nowa metoda
+        return $this->creatorId;
     }
 }

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Edit Event</title>
+</head>
+<body>
+    <?php include 'partials/nav.html'; ?>
+
+    <div class="container flex-column-center-center">
+        <form action="/edit-event/<?= $event->getId(); ?>" method="POST" class="flex-column-center-center">
+            <h1>Edit Event</h1>
+            <input type="text" name="title" value="<?= htmlspecialchars($event->getTitle()); ?>" required>
+            <textarea name="description" required><?= htmlspecialchars($event->getDescription()); ?></textarea>
+            <input type="text" name="location" value="<?= htmlspecialchars($event->getLocation()); ?>" required>
+            <input type="date" name="date" value="<?= htmlspecialchars($event->getDate()); ?>" required>
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <script src="/public/js/main.js"></script>
+</body>
+</html>

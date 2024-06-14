@@ -29,7 +29,8 @@ class EventRepository {
                     $row['description'],
                     $row['location'],
                     $row['id'],
-                    $row['date']
+                    $row['date'],
+                    $row['creator_id']  // Dodanie `creator_id`
                 );
             }
             return $projects;
@@ -121,7 +122,8 @@ class EventRepository {
                     $row['description'],
                     $row['location'],
                     $row['id'],
-                    $row['date']
+                    $row['date'],
+                    $row['creator_id']  // Dodanie `creator_id`
                 );
             } else {
                 return null;
@@ -129,6 +131,46 @@ class EventRepository {
         } catch (PDOException $e) {
             error_log('Error fetching event: ' . $e->getMessage());
             return null;
+        }
+    }
+
+    public function updateEvent(int $id, string $title, string $description, string $location, string $date): bool {
+        $conn = $this->database->getConnection();
+
+        try {
+            $stmt = $conn->prepare('
+                UPDATE projects
+                SET title = :title, description = :description, location = :location, date = :date
+                WHERE id = :id
+            ');
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':description', $description);
+            $stmt->bindParam(':location', $location);
+            $stmt->bindParam(':date', $date);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Error updating event: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function deleteEvent(int $id): bool {
+        $conn = $this->database->getConnection();
+
+        try {
+            // Najpierw usuń powiązania z tabeli event_attendees
+            $stmt = $conn->prepare('DELETE FROM event_attendees WHERE event_id = :event_id');
+            $stmt->bindParam(':event_id', $id);
+            $stmt->execute();
+
+            // Następnie usuń wydarzenie z tabeli projects
+            $stmt = $conn->prepare('DELETE FROM projects WHERE id = :id');
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Error deleting event: ' . $e->getMessage());
+            return false;
         }
     }
 }

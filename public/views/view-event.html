@@ -12,10 +12,23 @@
 
     <div class="container flex-column-center-center">
         <div class="main">
-            <h1><?= htmlspecialchars($event->getTitle()); ?></h1>
-            <p><?= htmlspecialchars($event->getDescription()); ?></p>
-            <p><strong>Location:</strong> <?= htmlspecialchars($event->getLocation()); ?></p>
-            <p><strong>Date:</strong> <?= htmlspecialchars($event->getDate()); ?></p>
+            <?php if (isset($message)): ?>
+                <p class="error"><?= htmlspecialchars($message); ?></p>
+            <?php endif; ?>
+            <?php if (isset($event)): ?>
+                <h1><?= htmlspecialchars($event->getTitle()); ?></h1>
+                <p><?= htmlspecialchars($event->getDescription()); ?></p>
+                <p><strong>Location:</strong> <?= htmlspecialchars($event->getLocation()); ?></p>
+                <p><strong>Date:</strong> <?= htmlspecialchars($event->getDate()); ?></p>
+                <?php if ($user->getId() === $event->getCreatorId()): ?>
+                    <a href="/edit-event/<?= $event->getId(); ?>" class="button">Edit Event</a>
+                    <form action="/delete-event/<?= $event->getId(); ?>" method="POST" style="display:inline;">
+                        <button type="submit" class="button">Delete Event</button>
+                    </form>
+                <?php endif; ?>
+            <?php else: ?>
+                <p>Event not found.</p>
+            <?php endif; ?>
         </div>
     </div>
 

@@ -52,14 +52,54 @@ class EventController extends AppController {
     public function viewEvent($id) {
         try {
             $event = $this->eventRepository->getEventById($id);
+            $user = $this->userRepository->find($_SESSION['user']);
             if ($event) {
-                $this->render('view-event', ['event' => $event]);
+                $this->render('view-event', ['event' => $event, 'user' => $user]);
             } else {
                 header('Location: /dashboard');
                 exit();
             }
         } catch (Exception $e) {
             error_log('Error fetching event: ' . $e->getMessage());
+            header('Location: /dashboard');
+            exit();
+        }
+    }
+
+    public function editEvent($id) {
+        if ($this->isPost()) {
+            try {
+                $title = $_POST['title'];
+                $description = $_POST['description'];
+                $location = $_POST['location'];
+                $date = $_POST['date'];
+
+                $updated = $this->eventRepository->updateEvent($id, $title, $description, $location, $date);
+                if ($updated) {
+                    header('Location: /event/' . $id);
+                    exit();
+                } else {
+                    $event = $this->eventRepository->getEventById($id);
+                    $this->render('edit-event', ['event' => $event, 'message' => 'Error updating event.']);
+                }
+            } catch (Exception $e) {
+                error_log('Error updating event: ' . $e->getMessage());
+                $event = $this->eventRepository->getEventById($id);
+                $this->render('edit-event', ['event' => $event, 'message' => 'Error updating event.']);
+            }
+        } else {
+            $event = $this->eventRepository->getEventById($id);
+            $this->render('edit-event', ['event' => $event]);
+        }
+    }
+
+    public function deleteEvent($id) {
+        try {
+            $deleted = $this->eventRepository->deleteEvent($id);
+            header('Location: /dashboard');
+            exit();
+        } catch (Exception $e) {
+            error_log('Error deleting event: ' . $e->getMessage());
             header('Location: /dashboard');
             exit();
         }
