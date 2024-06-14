@@ -20,7 +20,10 @@ class UserController extends AppController {
             $lastName = $_POST['last_name'];
             $username = $_POST['username'];
             $city = $_POST['city'];
-            $profilePicture = null;
+
+            // Ustaw domyślną fotkę profilową
+            $profilePicturePath = 'public/images/avatar.jpg';
+            $profilePicture = file_exists($profilePicturePath) ? file_get_contents($profilePicturePath) : null;
 
             $user = new User($email, $password, $firstName, $lastName, $username, $city, $profilePicture);
 
@@ -112,7 +115,7 @@ class UserController extends AppController {
                 $this->render('profile', ['user' => $user, 'message' => 'There was an error with the file upload.']);
             }
         } else {
-            header('Location: /login');
+            // header('Location: /profile');
         }
     }
 }
