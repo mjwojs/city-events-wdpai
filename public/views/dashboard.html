@@ -17,9 +17,9 @@
                 <?php if (isset($projects) && is_array($projects) && count($projects) > 0): ?>
                     <?php foreach($projects as $project): ?>
                         <div class="card" onclick="location.href='/event/<?= $project->getId(); ?>'">
-                            <img src="<?= $project->getImage(); ?>" alt="Project Image">
                             <h2><?= $project->getTitle(); ?></h2>
                             <p><?= $project->getDescription(); ?></p>
+                            <p><small><?= $project->getLocation(); ?></small></p>
                             <p><small><?= $project->getDate(); ?></small></p>
                         </div>
                     <?php endforeach; ?>

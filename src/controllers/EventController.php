@@ -15,31 +15,57 @@ class EventController extends AppController {
     }
 
     public function dashboard() {
-        $user = $this->userRepository->find($_SESSION['user']);
-        $projects = $this->eventRepository->getAllProjects();
-        $this->render('dashboard', ['projects' => $projects, 'user' => $user]);
+        try {
+            $user = $this->userRepository->find($_SESSION['user']);
+            $projects = $this->eventRepository->getAllProjects();
+            $this->render('dashboard', ['projects' => $projects, 'user' => $user]);
+        } catch (Exception $e) {
+            error_log('Error in dashboard: ' . $e->getMessage());
+            $this->render('dashboard', ['projects' => [], 'user' => null]);
+        }
     }
 
     public function addEvent() {
         if ($this->isPost()) {
-            $title = $_POST['title'];
-            $description = $_POST['description'];
-            $location = $_POST['location'];
-            $date = $_POST['date'];
-            $emails = explode(',', $_POST['emails']); // Assuming emails are provided as a comma-separated string
-            $creatorId = $_SESSION['user'];
+            try {
+                $title = $_POST['title'];
+                $description = $_POST['description'];
+                $location = $_POST['location'];
+                $date = $_POST['date'];
+                $emails = explode(',', $_POST['emails']); // Assuming emails are provided as a comma-separated string
+                $creatorId = $_SESSION['user'];
 
-            $eventId = $this->eventRepository->addEvent($title, $description, $location, $date, $creatorId);
+                $eventId = $this->eventRepository->addEvent($title, $description, $location, $date, $creatorId);
 
-            foreach ($emails as $email) {
-                $this->eventRepository->addEventAttendee($eventId, trim($email));
+                foreach ($emails as $email) {
+                    $this->eventRepository->addEventAttendee($eventId, trim($email));
+                }
+
+                header('Location: /dashboard');
+                exit();
+            } catch (Exception $e) {
+                error_log('Error adding event: ' . $e->getMessage());
+                $this->render('add-event', ['user' => $this->userRepository->find($_SESSION['user']), 'message' => 'Error adding event.']);
             }
-
-            header('Location: /dashboard');
-            exit();
         } else {
             $user = $this->userRepository->find($_SESSION['user']);
             $this->render('add-event', ['user' => $user]);
+        }
+    }
+
+    public function viewEvent($id) {
+        try {
+            $event = $this->eventRepository->getEventById($id);
+            if ($event) {
+                $this->render('view-event', ['event' => $event]);
+            } else {
+                header('Location: /dashboard');
+                exit();
+            }
+        } catch (Exception $e) {
+            error_log('Error fetching event: ' . $e->getMessage());
+            header('Location: /dashboard');
+            exit();
         }
     }
 }
