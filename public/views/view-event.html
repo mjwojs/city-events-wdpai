@@ -12,10 +12,10 @@
 
     <div class="container flex-column-center-center">
         <div class="main">
-            <h1><?= $event->getTitle(); ?></h1>
-            <p><?= $event->getDescription(); ?></p>
-            <p><strong>Location:</strong> <?= $event->getLocation(); ?></p>
-            <p><strong>Date:</strong> <?= $event->getDate(); ?></p>
+            <h1><?= htmlspecialchars($event->getTitle()); ?></h1>
+            <p><?= htmlspecialchars($event->getDescription()); ?></p>
+            <p><strong>Location:</strong> <?= htmlspecialchars($event->getLocation()); ?></p>
+            <p><strong>Date:</strong> <?= htmlspecialchars($event->getDate()); ?></p>
         </div>
     </div>
 

@@ -1,47 +1,45 @@
 <?php
 
-require_once 'src/controllers/AppController.php';
-require_once 'src/controllers/UserController.php';
 require_once 'src/controllers/EventController.php';
+require_once 'src/controllers/UserController.php';
 
 session_start();
-
-$controller = new AppController();
 
 $path = trim($_SERVER['REQUEST_URI'], '/');
 $path = parse_url($path, PHP_URL_PATH);
 $action = explode("/", $path)[0];
-$action = $action == null ? 'login' : $action;
+$id = explode("/", $path)[1] ?? null;
 
-switch ($action) {
+$eventController = new EventController();
+$userController = new UserController();
+
+switch($action) {
     case "dashboard":
-        $eventController = new EventController();
         $eventController->dashboard();
         break;
-    case "register":
-        $userController = new UserController();
-        $userController->register();
-        break;
-    case "login":
-        $userController = new UserController();
-        $userController->login();
-        break;
-    case "logout":
-        $userController = new UserController();
-        $userController->logout();
-        break;
-    case "profile":
-        $userController = new UserController();
-        $userController->profile();
-        break;
-    case "update-profile-picture":
-        $userController = new UserController();
-        $userController->updateProfilePicture();
-        break;
     case "add-event":
-        $eventController = new EventController();
         $eventController->addEvent();
         break;
+    case "event":
+        if ($id) {
+            $eventController->viewEvent($id);
+        } else {
+            header('Location: /dashboard');
+        }
+        break;
+    case "login":
+        $userController->login();
+        break;
+    case "register":
+        $userController->register();
+        break;
+    case "profile":
+        $userController->profile();
+        break;
+    case "logout":
+        $userController->logout();
+        break;
     default:
-        $controller->render('404');
+        header('Location: /login');
+        break;
 }
