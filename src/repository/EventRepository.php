@@ -10,11 +10,16 @@ class EventRepository {
         $this->database = new Database();
     }
 
-    public function getAllProjects(): array {
+    public function getAllProjectsForUser(int $userId): array {
         $conn = $this->database->getConnection();
 
         try {
-            $stmt = $conn->prepare('SELECT * FROM projects');
+            $stmt = $conn->prepare('
+                SELECT p.* FROM projects p
+                JOIN event_attendees ea ON p.id = ea.event_id
+                WHERE ea.user_id = :user_id
+            ');
+            $stmt->bindParam(':user_id', $userId);
             $stmt->execute();
 
             $projects = [];
@@ -34,7 +39,7 @@ class EventRepository {
         }
     }
 
-    public function addEvent(string $title, string $description, string $location, string $date, int $creatorId): int {
+    public function addEvent(string $title, string $description, string $location, string $date, int $creatorId, array $emails): int {
         $conn = $this->database->getConnection();
 
         try {
@@ -49,26 +54,55 @@ class EventRepository {
             $stmt->bindParam(':creator_id', $creatorId);
             $stmt->execute();
 
-            return $stmt->fetchColumn();
+            $eventId = $stmt->fetchColumn();
+
+            // Add creator as attendee
+            $this->addEventAttendee($eventId, $creatorId);
+
+            // Add invitees as attendees
+            foreach ($emails as $email) {
+                $userId = $this->getUserIdByEmail($email);
+                if ($userId) {
+                    $this->addEventAttendee($eventId, $userId);
+                }
+            }
+
+            return $eventId;
         } catch (PDOException $e) {
             error_log('Error adding event: ' . $e->getMessage());
             return 0;
         }
     }
 
-    public function addEventAttendee(int $eventId, string $email): void {
+    public function addEventAttendee(int $eventId, int $userId): void {
         $conn = $this->database->getConnection();
 
         try {
             $stmt = $conn->prepare('
                 INSERT INTO event_attendees (event_id, user_id) 
-                SELECT :event_id, id FROM users WHERE email = :email
+                VALUES (:event_id, :user_id)
             ');
             $stmt->bindParam(':event_id', $eventId);
-            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':user_id', $userId);
             $stmt->execute();
         } catch (PDOException $e) {
             error_log('Error adding event attendee: ' . $e->getMessage());
+        }
+    }
+
+    private function getUserIdByEmail(string $email): ?int {
+        $conn = $this->database->getConnection();
+
+        try {
+            $stmt = $conn->prepare('SELECT id FROM users WHERE email = :email');
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row ? (int) $row['id'] : null;
+        } catch (PDOException $e) {
+            error_log('Error fetching user by email: ' . $e->getMessage());
+            return null;
         }
     }
 

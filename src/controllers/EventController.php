@@ -17,7 +17,7 @@ class EventController extends AppController {
     public function dashboard() {
         try {
             $user = $this->userRepository->find($_SESSION['user']);
-            $projects = $this->eventRepository->getAllProjects();
+            $projects = $this->eventRepository->getAllProjectsForUser($user->getId());
             $this->render('dashboard', ['projects' => $projects, 'user' => $user]);
         } catch (Exception $e) {
             error_log('Error in dashboard: ' . $e->getMessage());
@@ -32,14 +32,10 @@ class EventController extends AppController {
                 $description = $_POST['description'];
                 $location = $_POST['location'];
                 $date = $_POST['date'];
-                $emails = explode(',', $_POST['emails']); // Assuming emails are provided as a comma-separated string
+                $emails = explode(',', $_POST['emails']);
                 $creatorId = $_SESSION['user'];
 
-                $eventId = $this->eventRepository->addEvent($title, $description, $location, $date, $creatorId);
-
-                foreach ($emails as $email) {
-                    $this->eventRepository->addEventAttendee($eventId, trim($email));
-                }
+                $eventId = $this->eventRepository->addEvent($title, $description, $location, $date, $creatorId, $emails);
 
                 header('Location: /dashboard');
                 exit();
