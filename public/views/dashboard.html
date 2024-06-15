@@ -11,10 +11,9 @@
     <?php include 'partials/nav.html'; ?>
 
     <div class="container flex-row-center-center">
-        <div class="main">
-            <h1>DASHBOARD</h1>
+        <div class="main dashboard">
+            <h2>Your Projects</h2>
             <div class="projects">
-                <h2>Your Projects</h2>
                 <?php if (isset($projects) && is_array($projects) && count($projects) > 0): ?>
                     <?php foreach($projects as $project): ?>
                         <div class="card" onclick="location.href='/event/<?= $project->getId(); ?>'">
@@ -28,9 +27,8 @@
                     <p>No projects available.</p>
                 <?php endif; ?>
             </div>
-
+            <h2>Public Events</h2>
             <div class="public-events">
-                <h2>Public Events</h2>
                 <?php if (isset($publicEvents) && is_array($publicEvents) && count($publicEvents) > 0): ?>
                     <?php foreach($publicEvents as $event): ?>
                         <div class="card" onclick="location.href='/event/<?= $event->getId(); ?>'">

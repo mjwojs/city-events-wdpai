@@ -10,9 +10,9 @@
 <body>
     <?php include 'partials/nav.html'; ?>
 
-    <div class="container flex-row-center-center">
+    <div class="container flex-column-center-center">
         <div class="main">
-            <h1>PROFILE</h1>
+            <h1>Profile</h1>
             <?php if ($user): ?>
                 <p><strong>Email:</strong> <?= $user->getEmail(); ?></p>
                 <p><strong>First Name:</strong> <?= $user->getFirstName(); ?></p>
