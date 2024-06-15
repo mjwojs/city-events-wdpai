@@ -1,6 +1,16 @@
 function toggleProfileMenu() {
     const profileDropdown = document.getElementById('profile-dropdown');
-    profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+    if (profileDropdown.style.display === 'block') {
+        profileDropdown.style.opacity = 0;
+        setTimeout(() => {
+            profileDropdown.style.display = 'none';
+        }, 300);
+    } else {
+        profileDropdown.style.display = 'block';
+        setTimeout(() => {
+            profileDropdown.style.opacity = 1;
+        }, 10);
+    }
 }
 
 document.addEventListener('click', function(event) {
@@ -9,7 +19,10 @@ document.addEventListener('click', function(event) {
 
     if (profilePicture && profileDropdown) {
         if (event.target !== profilePicture && !profileDropdown.contains(event.target)) {
-            profileDropdown.style.display = 'none';
+            profileDropdown.style.opacity = 0;
+            setTimeout(() => {
+                profileDropdown.style.display = 'none';
+            }, 300);
         }
     }
 });
