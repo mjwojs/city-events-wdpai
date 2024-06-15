@@ -33,12 +33,12 @@ class EventController extends AppController {
                 $description = $_POST['description'];
                 $location = $_POST['location'];
                 $date = $_POST['date'];
+                $time = $_POST['time'];
+                $datetime = $date . ' ' . $time;
                 $emails = explode(',', $_POST['emails']);
                 $isPublic = isset($_POST['is_public']) ? 1 : 0;
                 $creatorId = $_SESSION['user'];
-
-                $eventId = $this->eventRepository->addEvent($title, $description, $location, $date, $creatorId, $emails, $isPublic);
-
+                $eventId = $this->eventRepository->addEvent($title, $description, $location, $datetime, $creatorId, $emails, $isPublic);
                 header('Location: /dashboard');
                 exit();
             } catch (Exception $e) {
@@ -75,8 +75,9 @@ class EventController extends AppController {
                 $description = $_POST['description'];
                 $location = $_POST['location'];
                 $date = $_POST['date'];
-
-                $updated = $this->eventRepository->updateEvent($id, $title, $description, $location, $date);
+                $time = $_POST['time'];
+                $datetime = $date . ' ' . $time;
+                $updated = $this->eventRepository->updateEvent($id, $title, $description, $location, $datetime);
                 if ($updated) {
                     header('Location: /event/' . $id);
                     exit();

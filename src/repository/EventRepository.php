@@ -135,19 +135,18 @@ class EventRepository {
         }
     }
 
-    public function updateEvent(int $id, string $title, string $description, string $location, string $date): bool {
+    public function updateEvent(int $id, string $title, string $description, string $location, string $datetime): bool {
         $conn = $this->database->getConnection();
-
         try {
             $stmt = $conn->prepare('
                 UPDATE projects
-                SET title = :title, description = :description, location = :location, date = :date
+                SET title = :title, description = :description, location = :location, date = :datetime
                 WHERE id = :id
             ');
             $stmt->bindParam(':title', $title);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':location', $location);
-            $stmt->bindParam(':date', $date);
+            $stmt->bindParam(':datetime', $datetime);
             $stmt->bindParam(':id', $id);
             return $stmt->execute();
         } catch (PDOException $e) {

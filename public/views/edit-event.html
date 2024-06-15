@@ -16,7 +16,8 @@
             <input type="text" name="title" value="<?= htmlspecialchars($event->getTitle()); ?>" required>
             <textarea name="description" required><?= htmlspecialchars($event->getDescription()); ?></textarea>
             <input type="text" name="location" value="<?= htmlspecialchars($event->getLocation()); ?>" required>
-            <input type="date" name="date" value="<?= htmlspecialchars($event->getDate()); ?>" required>
+            <input type="date" name="date" value="<?= htmlspecialchars(date('Y-m-d', strtotime($event->getDate()))); ?>" required>
+            <input type="time" name="time" value="<?= htmlspecialchars(date('H:i', strtotime($event->getDate()))); ?>" required>
             <button type="submit">Save Changes</button>
         </form>
     </div>
