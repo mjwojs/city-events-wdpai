@@ -14,6 +14,7 @@
         <div class="main">
             <h1>DASHBOARD</h1>
             <div class="projects">
+                <h2>Your Projects</h2>
                 <?php if (isset($projects) && is_array($projects) && count($projects) > 0): ?>
                     <?php foreach($projects as $project): ?>
                         <div class="card" onclick="location.href='/event/<?= $project->getId(); ?>'">
@@ -25,6 +26,22 @@
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p>No projects available.</p>
+                <?php endif; ?>
+            </div>
+
+            <div class="public-events">
+                <h2>Public Events</h2>
+                <?php if (isset($publicEvents) && is_array($publicEvents) && count($publicEvents) > 0): ?>
+                    <?php foreach($publicEvents as $event): ?>
+                        <div class="card" onclick="location.href='/event/<?= $event->getId(); ?>'">
+                            <h2><?= $event->getTitle(); ?></h2>
+                            <p><?= $event->getDescription(); ?></p>
+                            <p><small><?= $event->getLocation(); ?></small></p>
+                            <p><small><?= $event->getDate(); ?></small></p>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No public events available.</p>
                 <?php endif; ?>
             </div>
         </div>

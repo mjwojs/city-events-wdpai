@@ -35,6 +35,7 @@ class Database {
         }
     }
 
+    // database.php
     public function initializeDatabase() {
         try {
             $this->conn->exec("
@@ -57,7 +58,8 @@ class Database {
                     description TEXT,
                     location VARCHAR(255) NOT NULL,
                     date TIMESTAMP,
-                    creator_id INTEGER REFERENCES users(id)
+                    creator_id INTEGER REFERENCES users(id),
+                    is_public BOOLEAN DEFAULT FALSE
                 );
             ");
 
@@ -72,6 +74,7 @@ class Database {
             die("Database initialization failed: " . $e->getMessage());
         }
     }
+
 
     public function getConnection() {
         return $this->conn;

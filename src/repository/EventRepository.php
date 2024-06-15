@@ -30,7 +30,7 @@ class EventRepository {
                     $row['location'],
                     $row['id'],
                     $row['date'],
-                    $row['creator_id']  // Dodanie `creator_id`
+                    $row['creator_id']
                 );
             }
             return $projects;
@@ -40,19 +40,20 @@ class EventRepository {
         }
     }
 
-    public function addEvent(string $title, string $description, string $location, string $date, int $creatorId, array $emails): int {
+    public function addEvent(string $title, string $description, string $location, string $date, int $creatorId, array $emails, bool $isPublic): int {
         $conn = $this->database->getConnection();
 
         try {
             $stmt = $conn->prepare('
-                INSERT INTO projects (title, description, location, date, creator_id) 
-                VALUES (:title, :description, :location, :date, :creator_id) RETURNING id
+                INSERT INTO projects (title, description, location, date, creator_id, is_public) 
+                VALUES (:title, :description, :location, :date, :creator_id, :is_public) RETURNING id
             ');
             $stmt->bindParam(':title', $title);
             $stmt->bindParam(':description', $description);
             $stmt->bindParam(':location', $location);
             $stmt->bindParam(':date', $date);
             $stmt->bindParam(':creator_id', $creatorId);
+            $stmt->bindParam(':is_public', $isPublic, PDO::PARAM_BOOL);
             $stmt->execute();
 
             $eventId = $stmt->fetchColumn();
@@ -123,7 +124,7 @@ class EventRepository {
                     $row['location'],
                     $row['id'],
                     $row['date'],
-                    $row['creator_id']  // Dodanie `creator_id`
+                    $row['creator_id']
                 );
             } else {
                 return null;
@@ -171,6 +172,28 @@ class EventRepository {
         } catch (PDOException $e) {
             error_log('Error deleting event: ' . $e->getMessage());
             return false;
+        }
+    }
+
+    public function findAllPublicEvents(): array {
+        $conn = $this->database->getConnection();
+        try {
+            $stmt = $conn->prepare('SELECT * FROM projects WHERE is_public = TRUE');
+            $stmt->execute();
+            $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return array_map(function($data) {
+                return new Project(
+                    $data['title'],
+                    $data['description'],
+                    $data['location'],
+                    $data['id'],
+                    $data['date'],
+                    $data['creator_id']
+                );
+            }, $events);
+        } catch (PDOException $e) {
+            error_log('Error fetching public events: ' . $e->getMessage());
+            return [];
         }
     }
 }

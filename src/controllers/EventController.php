@@ -18,10 +18,11 @@ class EventController extends AppController {
         try {
             $user = $this->userRepository->find($_SESSION['user']);
             $projects = $this->eventRepository->getAllProjectsForUser($user->getId());
-            $this->render('dashboard', ['projects' => $projects, 'user' => $user]);
+            $publicEvents = $this->eventRepository->findAllPublicEvents();
+            $this->render('dashboard', ['projects' => $projects, 'user' => $user, 'publicEvents' => $publicEvents]);
         } catch (Exception $e) {
             error_log('Error in dashboard: ' . $e->getMessage());
-            $this->render('dashboard', ['projects' => [], 'user' => null]);
+            $this->render('dashboard', ['projects' => [], 'user' => null, 'publicEvents' => []]);
         }
     }
 
@@ -33,9 +34,10 @@ class EventController extends AppController {
                 $location = $_POST['location'];
                 $date = $_POST['date'];
                 $emails = explode(',', $_POST['emails']);
+                $isPublic = isset($_POST['is_public']) ? 1 : 0;
                 $creatorId = $_SESSION['user'];
 
-                $eventId = $this->eventRepository->addEvent($title, $description, $location, $date, $creatorId, $emails);
+                $eventId = $this->eventRepository->addEvent($title, $description, $location, $date, $creatorId, $emails, $isPublic);
 
                 header('Location: /dashboard');
                 exit();
