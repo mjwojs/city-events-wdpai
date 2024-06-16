@@ -302,13 +302,6 @@ form p {
     gap: 0.5em;
 }
 
-.login-container .logo {
-    font-family: 'Lobster', cursive;
-    font-size: 32px;
-    color: white;
-    margin-bottom: 20px;
-}
-
 /* Responsive Styles */
 @media screen and (max-width: 768px) {
     .container {
@@ -327,6 +320,7 @@ form p {
     .projects, .public-events {
         flex-direction: column;
         align-items: center;
+        margin-top: 60px; /* Add margin-top to provide space from top */
     }
 
     .card {
@@ -359,6 +353,7 @@ form p {
     .projects, .public-events {
         flex-direction: column;
         align-items: center;
+        margin-top: 60px;
     }
 
     .card {
